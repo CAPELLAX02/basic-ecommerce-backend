@@ -9,6 +9,11 @@ spring:
       ddl-auto: create-drop
     database: postgresql
     show-sql: true
+  messages:
+    basename: messages
+  web:
+    locale: en_US
+    locale-resolver: fixed
 logging:
   level:
     web: debug
