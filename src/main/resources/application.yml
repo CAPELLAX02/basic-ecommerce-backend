@@ -9,3 +9,6 @@ spring:
       ddl-auto: create-drop
     database: postgresql
     show-sql: true
+logging:
+  level:
+    web: debug

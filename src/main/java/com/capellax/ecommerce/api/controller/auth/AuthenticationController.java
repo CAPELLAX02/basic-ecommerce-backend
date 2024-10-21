@@ -3,6 +3,7 @@ package com.capellax.ecommerce.api.controller.auth;
 import com.capellax.ecommerce.api.model.RegistrationBody;
 import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import com.capellax.ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(
-            @RequestBody RegistrationBody registrationBody
+            @Valid @RequestBody RegistrationBody registrationBody
     ) {
         try {
             userService.registerUser(registrationBody);
