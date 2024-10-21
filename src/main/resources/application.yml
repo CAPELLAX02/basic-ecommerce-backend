@@ -17,3 +17,13 @@ spring:
 logging:
   level:
     web: debug
+
+# environment variables
+encryption:
+  salt:
+    rounds: 10
+jwt:
+  issuer: eCommerce
+  expiryInSeconds: 604800
+  algorithm:
+    key: SuperSecureKey

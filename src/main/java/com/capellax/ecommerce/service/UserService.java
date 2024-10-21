@@ -5,7 +5,6 @@ import com.capellax.ecommerce.api.model.RegistrationBody;
 import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import com.capellax.ecommerce.model.LocalUser;
 import com.capellax.ecommerce.model.dao.LocalUserDAO;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +15,8 @@ import java.util.Optional;
 public class UserService {
 
     private final LocalUserDAO localUserDAO;
-    private final EncryptionService encryptionService; // TODO: create the service
-    private final JWTService jwtService // TODO: create the service
+    private final EncryptionService encryptionService;
+    private final JWTService jwtService;
 
     public LocalUser registerUser(
             RegistrationBody registrationBody
@@ -31,8 +30,7 @@ public class UserService {
         user.setFirstName(registrationBody.getFirstName());
         user.setLastName(registrationBody.getLastName());
         user.setUsername(registrationBody.getUsername());
-        // TODO: Encrypt password
-        user.setPassword(registrationBody.getPassword());
+        user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
         return localUserDAO.save(user);
     }
 
@@ -43,7 +41,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             LocalUser user = optionalUser.get();
 
-            if (encryptionService.verifyPassword(loginBody.getPassword()), user.getPassword()) {
+            if (encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword())) {
                 return jwtService.generateJWT(user);
             }
         }
