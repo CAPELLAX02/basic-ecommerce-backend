@@ -17,8 +17,14 @@ public class WebSecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/**").permitAll();
-                            //.anyRequest().authenticated()
+                    auth.requestMatchers(
+                                    "/auth/**",
+                                    "/orders/**",
+                                    "/products/**"
+                            )
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated();
                 })
                 .build();
     }
