@@ -22,7 +22,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(
+    public ResponseEntity<Void> registerUser(
             @Valid @RequestBody RegistrationBody registrationBody
     ) {
         try {

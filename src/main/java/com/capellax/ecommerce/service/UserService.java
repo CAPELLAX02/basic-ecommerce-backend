@@ -18,7 +18,7 @@ public class UserService {
     private final EncryptionService encryptionService;
     private final JWTService jwtService;
 
-    public LocalUser registerUser(
+    public void registerUser(
             RegistrationBody registrationBody
     ) throws UserAlreadyExistsException {
         if (localUserDAO.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent()
@@ -31,31 +31,17 @@ public class UserService {
         user.setLastName(registrationBody.getLastName());
         user.setUsername(registrationBody.getUsername());
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
-        return localUserDAO.save(user);
+        localUserDAO.save(user);
     }
 
     public String loginUser(
             LoginBody loginBody
     ) {
-        Optional<LocalUser> optionalUser = localUserDAO.findByUsernameIgnoreCase(loginBody.getUsername());
-        if (optionalUser.isPresent()) {
-            LocalUser user = optionalUser.get();
-
-            if (encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword())) {
-                return jwtService.generateJWT(user);
-            }
-        }
-        return null;
+        return localUserDAO.findByUsernameIgnoreCase(loginBody.getUsername())
+                .filter(user -> encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword()))
+                .map(jwtService::generateJWT)
+                .orElse(null);
     }
-
-
-
-
-
-
-
-
-
 
 
 }
