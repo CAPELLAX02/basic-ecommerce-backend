@@ -1,0 +1,30 @@
+services:
+  postgres:
+    container_name: ecommerce_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ahmet
+      POSTGRES_PASSWORD: ahmet
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: ecommerce_db
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - spring-demo
+    restart: unless-stopped
+  maildev:
+    container_name: maildev_container
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+
+networks:
+  spring-demo:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

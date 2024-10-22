@@ -1,14 +1,29 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce_db
-    username: postgres
-    password: 123456
+    username: ahmet
+    password: ahmet
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     database: postgresql
     show-sql: true
+  mail:
+    host: localhost
+    port: 1025
+    username: ahmet
+    password: ahmet
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
   messages:
     basename: messages
   web:
