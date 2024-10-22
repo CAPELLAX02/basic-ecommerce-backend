@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Statement;
 import java.util.Date;
 
 @Service
@@ -25,6 +26,8 @@ public class JWTService {
 
     private static final String USERNAME_KEY = "USERNAME";
 
+    private static final String EMAIL_KEY = "EMAIL";
+
     @PostConstruct
     public void postConstruct() {
         algorithm = Algorithm.HMAC256(algorithmKey);
@@ -40,6 +43,14 @@ public class JWTService {
 
     public String getUsername(String token) {
         return JWT.decode(token).getClaim(USERNAME_KEY).asString();
+    }
+
+    public String generateVerificationJWT(LocalUser user) {
+        return JWT.create()
+                .withClaim(EMAIL_KEY, user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + (1000L * expiryInSeconds)))
+                .withIssuer(issuer)
+                .sign(algorithm);
     }
 
 }
