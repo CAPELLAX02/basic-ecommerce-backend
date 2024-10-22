@@ -19,9 +19,10 @@ public class LocalUser {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 1000)
     private String password;
 
@@ -43,6 +44,10 @@ public class LocalUser {
     private List<VerificationToken> verificationTokens = new ArrayList<>();
 
     @Column(name = "is_email_verified", nullable = false)
-    private boolean isEmailVerified = false;
+    private Boolean emailVerified = false;
+
+    public Boolean isEmailVerified() {
+        return emailVerified;
+    }
 
 }

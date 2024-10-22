@@ -40,7 +40,7 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> loginUser(
             @Valid @RequestBody LoginBody loginBody
     ) {
-        String jwt = null;
+        String jwt;
         try {
             jwt = userService.loginUser(loginBody);
         } catch (UserNotVerifiedException exp) {
@@ -48,7 +48,7 @@ public class AuthenticationController {
             response.setSuccess(false);
             String reason = "USER_NOT_VERIFIED";
             if (exp.isNewEmailSent()) {
-                reason += "EMAIL_RESENT";
+                reason += "_EMAIL_RESENT";
             }
             response.setFailureReason(reason);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
@@ -67,12 +67,12 @@ public class AuthenticationController {
 
     @PostMapping("/verify")
     public ResponseEntity<Void> verifyEmail(
-            @RequestBody String token
+            @RequestParam String token
     ) {
         if (userService.verifyUser(token)) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
         }
     }
 

@@ -27,7 +27,7 @@ public class UserService {
     private final JWTService jwtService;
     private final EmailService emailService;
 
-    public void registerUser(
+    public LocalUser registerUser(
             RegistrationBody registrationBody
     ) throws UserAlreadyExistsException, EmailFailureException {
         if (localUserDAO.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent()
@@ -35,7 +35,6 @@ public class UserService {
             throw new UserAlreadyExistsException();
         }
         LocalUser user = new LocalUser();
-
         user.setEmail(registrationBody.getEmail());
         user.setFirstName(registrationBody.getFirstName());
         user.setLastName(registrationBody.getLastName());
@@ -43,10 +42,9 @@ public class UserService {
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
 
         VerificationToken verificationToken = createVerificationToken(user);
-
         emailService.sendVerificationEmail(verificationToken);
 
-        localUserDAO.save(user);
+        return localUserDAO.save(user);
     }
 
     public VerificationToken createVerificationToken(
@@ -94,7 +92,6 @@ public class UserService {
             VerificationToken verificationToken = opToken.get();
             LocalUser user = verificationToken.getUser();
             if (!user.isEmailVerified()) {
-                // TODO: Check if it remains 'setEmailVerified' or changed as 'setIsEmailVerified'
                 user.setEmailVerified(true);
                 localUserDAO.save(user);
                 verificationTokenDAO.deleteByUser(user);
@@ -103,21 +100,5 @@ public class UserService {
         }
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

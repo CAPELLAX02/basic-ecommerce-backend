@@ -19,7 +19,7 @@ public class EmailService {
     @Value("${app.frontend.url}")
     private String url;
 
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     private SimpleMailMessage makeMailMessage() {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
