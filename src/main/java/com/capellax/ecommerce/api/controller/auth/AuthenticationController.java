@@ -31,22 +31,49 @@ public class AuthenticationController {
             return ResponseEntity.ok().build();
         } catch (UserAlreadyExistsException exp) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (EmailFailureException e) {
-            throw new RuntimeException(e);
+        } catch (EmailFailureException exp) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(
             @Valid @RequestBody LoginBody loginBody
-    ) throws UserNotVerifiedException, EmailFailureException {
-        String jwt = userService.loginUser(loginBody);
+    ) {
+        String jwt = null;
+        try {
+            jwt = userService.loginUser(loginBody);
+        } catch (UserNotVerifiedException exp) {
+            LoginResponse response = new LoginResponse();
+            response.setSuccess(false);
+            String reason = "USER_NOT_VERIFIED";
+            if (exp.isNewEmailSent()) {
+                reason += "EMAIL_RESENT";
+            }
+            response.setFailureReason(reason);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (EmailFailureException exp) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
         if (jwt == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } else {
+          LoginResponse response = new LoginResponse();
+          response.setJwt(jwt);
+          response.setSuccess(true);
+          return ResponseEntity.ok(response);
+      }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Void> verifyEmail(
+            @RequestBody String token
+    ) {
+        if (userService.verifyUser(token)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setJwt(jwt);
-        return ResponseEntity.ok(loginResponse);
     }
 
     @GetMapping("/me")
@@ -55,5 +82,15 @@ public class AuthenticationController {
     ) {
         return user;
     }
+
+
+
+
+
+
+
+
+
+
 
 }
