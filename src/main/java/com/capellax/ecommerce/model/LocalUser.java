@@ -42,6 +42,7 @@ public class LocalUser {
     @OrderBy("id desc")
     private List<VerificationToken> verificationTokens = new ArrayList<>();
 
-
+    @Column(name = "is_email_verified", nullable = false)
+    private boolean isEmailVerified = false;
 
 }

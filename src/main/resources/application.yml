@@ -42,3 +42,12 @@ jwt:
   expiryInSeconds: 604800
   algorithm:
     key: SuperSecureKey
+
+email:
+  from: no-reply@ecommerce.com
+
+app:
+  frontend:
+    url: http://ecommerce.com # dummy url
+  backend:
+    url: http://localhost:8080 # for dev environment
