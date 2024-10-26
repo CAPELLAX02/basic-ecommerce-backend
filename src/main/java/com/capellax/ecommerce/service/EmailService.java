@@ -1,6 +1,7 @@
 package com.capellax.ecommerce.service;
 
 import com.capellax.ecommerce.exception.EmailFailureException;
+import com.capellax.ecommerce.model.LocalUser;
 import com.capellax.ecommerce.model.VerificationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,5 +43,38 @@ public class EmailService {
             throw new EmailFailureException();
         }
     }
+
+    public void sendPasswordResetEmail(
+            LocalUser user,
+            String token
+    ) throws EmailFailureException {
+        SimpleMailMessage message = makeMailMessage();
+
+        message.setTo(user.getEmail());
+        message.setSubject("Your password reset request link.");
+        message.setText("You requested a password reset on our website. Please " +
+                "find the link below to be able to reset your password.\n" + url +
+                "/auth/reset?token=" + token);
+
+        try {
+            javaMailSender.send(message);
+        } catch (MailException exp) {
+            throw new EmailFailureException();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

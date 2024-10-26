@@ -2,11 +2,9 @@ package com.capellax.ecommerce.api.controller.auth;
 
 import com.capellax.ecommerce.api.model.LoginBody;
 import com.capellax.ecommerce.api.model.LoginResponse;
+import com.capellax.ecommerce.api.model.PasswordResetBody;
 import com.capellax.ecommerce.api.model.RegistrationBody;
-import com.capellax.ecommerce.exception.EmailFailureException;
-import com.capellax.ecommerce.exception.InvalidCredentialsException;
-import com.capellax.ecommerce.exception.UserAlreadyExistsException;
-import com.capellax.ecommerce.exception.UserNotVerifiedException;
+import com.capellax.ecommerce.exception.*;
 import com.capellax.ecommerce.model.LocalUser;
 import com.capellax.ecommerce.service.UserService;
 import jakarta.validation.Valid;
@@ -83,6 +81,28 @@ public class AuthenticationController {
             @AuthenticationPrincipal LocalUser user
     ) {
         return user;
+    }
+
+    @PostMapping("/forgot")
+    public ResponseEntity<Void> forgotPassword(
+            @RequestParam String email
+    ) {
+        try {
+            userService.forgotPassword(email);
+            return ResponseEntity.ok().build();
+        } catch (EmailNotFoundException exp) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (EmailFailureException exp) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody PasswordResetBody passwordResetBody
+    ) {
+        userService.resetPassword(passwordResetBody);
+        return ResponseEntity.ok().build();
     }
 
 }
