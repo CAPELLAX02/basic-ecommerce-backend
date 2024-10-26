@@ -72,7 +72,7 @@ public class AuthenticationController {
         if (userService.verifyUser(token)) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
