@@ -84,9 +84,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean verifyUser(
-            String token
-    ) {
+    public Boolean verifyUser(String token) {
         Optional<VerificationToken> opToken = verificationTokenDAO.findByToken(token);
         if (opToken.isPresent()) {
             VerificationToken verificationToken = opToken.get();
@@ -97,8 +95,11 @@ public class UserService {
                 verificationTokenDAO.deleteByUser(user);
                 return true;
             }
+        } else {
+            System.out.println("Token bulunamadı veya geçersiz: " + token);
         }
         return false;
     }
+
 
 }
