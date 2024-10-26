@@ -10,5 +10,5 @@ spring:
   mail:
     # localhost does not need to be overwritten here
     port: 2025
-    username: test
-    password: test
+    username: test_username
+    password: test_password
