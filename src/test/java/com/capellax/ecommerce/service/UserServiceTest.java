@@ -1,28 +1,29 @@
 package com.capellax.ecommerce.service;
 
 import com.capellax.ecommerce.api.model.LoginBody;
+import com.capellax.ecommerce.api.model.RegistrationBody;
 import com.capellax.ecommerce.exception.EmailFailureException;
+import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import com.capellax.ecommerce.exception.UserNotVerifiedException;
 import com.capellax.ecommerce.model.VerificationToken;
 import com.capellax.ecommerce.model.dao.VerificationTokenDAO;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import com.capellax.ecommerce.api.model.RegistrationBody;
-import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
-import org.eclipse.angus.mail.imap.protocol.BODY;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class UserServiceTest {
 
     @RegisterExtension

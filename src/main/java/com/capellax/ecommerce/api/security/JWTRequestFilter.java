@@ -38,16 +38,18 @@ public class JWTRequestFilter extends OncePerRequestFilter {
           String token = tokenHeader.substring(7);
           try {
               String username = jwtService.getUsername(token);
-              Optional<LocalUser> optionalUser = localUserDAO.findByUsernameIgnoreCase(username);
-              if (optionalUser.isPresent()) {
-                  LocalUser user = optionalUser.get();
-                  UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                          user,
-                          null,
-                          new ArrayList<>()
-                  );
-                  authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                  SecurityContextHolder.getContext().setAuthentication(authentication);
+              Optional<LocalUser> opUser = localUserDAO.findByUsernameIgnoreCase(username);
+              if (opUser.isPresent()) {
+                  LocalUser user = opUser.get();
+                  if (user.isEmailVerified()) {
+                      UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                              user,
+                              null,
+                              new ArrayList<>()
+                      );
+                      authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                      SecurityContextHolder.getContext().setAuthentication(authentication);
+                  }
               }
           } catch (JWTDecodeException exp) {
               throw new RuntimeException("Invalid JWT token");
