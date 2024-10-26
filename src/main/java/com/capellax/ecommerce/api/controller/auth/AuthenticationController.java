@@ -4,6 +4,7 @@ import com.capellax.ecommerce.api.model.LoginBody;
 import com.capellax.ecommerce.api.model.LoginResponse;
 import com.capellax.ecommerce.api.model.RegistrationBody;
 import com.capellax.ecommerce.exception.EmailFailureException;
+import com.capellax.ecommerce.exception.InvalidCredentialsException;
 import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import com.capellax.ecommerce.exception.UserNotVerifiedException;
 import com.capellax.ecommerce.model.LocalUser;
@@ -37,9 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(
-            @Valid @RequestBody LoginBody loginBody
-    ) {
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginBody loginBody) {
         String jwt;
         try {
             jwt = userService.loginUser(loginBody);
@@ -54,16 +53,19 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         } catch (EmailFailureException exp) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (InvalidCredentialsException exp) {
+            LoginResponse response = new LoginResponse();
+            response.setSuccess(false);
+            response.setFailureReason("INVALID_CREDENTIALS");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-        if (jwt == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } else {
-          LoginResponse response = new LoginResponse();
-          response.setJwt(jwt);
-          response.setSuccess(true);
-          return ResponseEntity.ok(response);
-      }
+
+        LoginResponse response = new LoginResponse();
+        response.setJwt(jwt);
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/verify")
     public ResponseEntity<Void> verifyEmail(

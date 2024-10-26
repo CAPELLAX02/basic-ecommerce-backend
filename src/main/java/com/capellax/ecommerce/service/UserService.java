@@ -3,6 +3,7 @@ package com.capellax.ecommerce.service;
 import com.capellax.ecommerce.api.model.LoginBody;
 import com.capellax.ecommerce.api.model.RegistrationBody;
 import com.capellax.ecommerce.exception.EmailFailureException;
+import com.capellax.ecommerce.exception.InvalidCredentialsException;
 import com.capellax.ecommerce.exception.UserAlreadyExistsException;
 import com.capellax.ecommerce.exception.UserNotVerifiedException;
 import com.capellax.ecommerce.model.LocalUser;
@@ -60,7 +61,7 @@ public class UserService {
 
     public String loginUser(
             LoginBody loginBody
-    ) throws UserNotVerifiedException, EmailFailureException {
+    ) throws UserNotVerifiedException, EmailFailureException, InvalidCredentialsException {
         Optional<LocalUser> opUser = localUserDAO.findByUsernameIgnoreCase(loginBody.getUsername());
         if (opUser.isPresent()) {
             LocalUser user = opUser.get();
@@ -78,10 +79,14 @@ public class UserService {
                     }
                     throw new UserNotVerifiedException();
                 }
+            } else {
+                throw new InvalidCredentialsException("Invalid password.");
             }
+        } else {
+            throw new InvalidCredentialsException("Username not found.");
         }
-        return null;
     }
+
 
     @Transactional
     public Boolean verifyUser(String token) {
