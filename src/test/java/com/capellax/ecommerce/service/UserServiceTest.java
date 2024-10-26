@@ -207,6 +207,7 @@ public class UserServiceTest {
         );
     }
 
+    @Test
     public void testResetPassword() {
         LocalUser user = localUserDAO.findByUsernameIgnoreCase("UserA").get();
         String token = jwtService.generatePasswordResetJWT(user);

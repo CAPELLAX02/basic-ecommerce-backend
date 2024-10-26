@@ -29,7 +29,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 "/auth/**",
                                 "/orders/**",
-                                "/products/**"
+                                "/products/**",
+                                "/users/**"
                         )
                         .permitAll()
                         .anyRequest()
