@@ -30,7 +30,8 @@ public class WebSecurityConfig {
                                 "/auth/**",
                                 "/orders/**",
                                 "/products/**",
-                                "/users/**"
+                                "/users/**",
+                                "/websocket/**"
                         )
                         .permitAll()
                         .anyRequest()
